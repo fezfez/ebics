@@ -35,8 +35,10 @@ class HIACommand
 
     public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509Generator $x509Generator): KeyRing
     {
-        $keyRing->setUserCertificateE($this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::e()));
-        $keyRing->setUserCertificateX($this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::x()));
+        $keyRing->setUserCertificateEAndX(
+            $this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::e()),
+            $this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::x())
+        );
 
         $search = [
             '{{TimeStamp}}' => (new DateTime())->format('Y-m-d\TH:i:s\Z'),

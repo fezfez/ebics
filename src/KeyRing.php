@@ -36,6 +36,34 @@ class KeyRing implements JsonSerializable
         $this->userCertificateA = $certificate;
     }
 
+    public function setUserCertificateEAndX(UserCertificate $userCertificateE, UserCertificate $userCertificateX): void
+    {
+        if ($this->userCertificateE !== null) {
+            throw new RuntimeException('userCertificateE already exist');
+        }
+
+        if ($this->userCertificateX !== null) {
+            throw new RuntimeException('userCertificateX already exist');
+        }
+
+        $this->userCertificateE = $userCertificateE;
+        $this->userCertificateX = $userCertificateX;
+    }
+
+    public function setBankCertificate(BankCertificate $bankCertificateX, BankCertificate $bankCertificateE): void
+    {
+        if ($this->bankCertificateX !== null) {
+            throw new RuntimeException('bankCertificateX already exist');
+        }
+
+        if ($this->bankCertificateE !== null) {
+            throw new RuntimeException('bankCertificateE already exist');
+        }
+
+        $this->bankCertificateX = $bankCertificateX;
+        $this->bankCertificateE = $bankCertificateE;
+    }
+
     public function getUserCertificateA(): UserCertificate
     {
         if ($this->userCertificateA === null) {
@@ -43,16 +71,6 @@ class KeyRing implements JsonSerializable
         }
 
         return $this->userCertificateA;
-    }
-
-    public function getUserCertificateAVersion(): string
-    {
-        return 'A006';
-    }
-
-    public function setUserCertificateX(UserCertificate $certificate): void
-    {
-        $this->userCertificateX = $certificate;
     }
 
     public function getUserCertificateX(): UserCertificate
@@ -64,16 +82,6 @@ class KeyRing implements JsonSerializable
         return $this->userCertificateX;
     }
 
-    public function getUserCertificateXVersion(): string
-    {
-        return 'X002';
-    }
-
-    public function setUserCertificateE(UserCertificate $certificate): void
-    {
-        $this->userCertificateE = $certificate;
-    }
-
     public function getUserCertificateE(): UserCertificate
     {
         if ($this->userCertificateE === null) {
@@ -83,20 +91,9 @@ class KeyRing implements JsonSerializable
         return $this->userCertificateE;
     }
 
-    public function getUserCertificateEVersion(): string
-    {
-        return 'E002';
-    }
-
     public function getPassword(): Password
     {
         return $this->password;
-    }
-
-    public function setBankCertificate(BankCertificate $bankCertificateX, BankCertificate $bankCertificateE): void
-    {
-        $this->bankCertificateX = $bankCertificateX;
-        $this->bankCertificateE = $bankCertificateE;
     }
 
     public function getBankCertificateX(): BankCertificate
@@ -108,11 +105,6 @@ class KeyRing implements JsonSerializable
         return $this->bankCertificateX;
     }
 
-    public function getBankCertificateXVersion(): string
-    {
-        return 'X002';
-    }
-
     public function getBankCertificateE(): BankCertificate
     {
         if ($this->bankCertificateE === null) {
@@ -120,11 +112,6 @@ class KeyRing implements JsonSerializable
         }
 
         return $this->bankCertificateE;
-    }
-
-    public function getBankCertificateEVersion(): string
-    {
-        return 'E002';
     }
 
     public static function fromFile(string $file, string $password): self
@@ -149,15 +136,15 @@ class KeyRing implements JsonSerializable
         }
 
         if (array_key_exists('userCertificateA', $data) && ! empty($data['userCertificateA'])) {
-            $keyring->setUserCertificateA(UserCertificate::fromArray($data['userCertificateA']));
+            $keyring->userCertificateA = UserCertificate::fromArray($data['userCertificateA']);
         }
 
         if (array_key_exists('userCertificateE', $data) && ! empty($data['userCertificateE'])) {
-            $keyring->setUserCertificateE(UserCertificate::fromArray($data['userCertificateE']));
+            $keyring->userCertificateE = UserCertificate::fromArray($data['userCertificateE']);
         }
 
         if (array_key_exists('userCertificateX', $data) && ! empty($data['userCertificateX'])) {
-            $keyring->setUserCertificateX(UserCertificate::fromArray($data['userCertificateX']));
+            $keyring->userCertificateX = UserCertificate::fromArray($data['userCertificateX']);
         }
 
         return $keyring;

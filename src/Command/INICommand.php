@@ -11,10 +11,8 @@ use Cube43\Ebics\EbicsServerCaller;
 use Cube43\Ebics\KeyRing;
 use Cube43\Ebics\RenderXml;
 use Cube43\Ebics\User;
-use Cube43\Ebics\Version;
 use Cube43\Ebics\X509Generator;
 use DateTime;
-use RuntimeException;
 
 use function base64_encode;
 use function Safe\gzcompress;
