@@ -1,0 +1,54 @@
+{
+  "name": "fezfez/ebics",
+  "type": "library",
+  "description": "PHP library to communicate with bank through EBICS protocol.",
+  "keywords": [
+    "ebics",
+    "PHP",
+    "client",
+    "symfony",
+    "openssl",
+    "rsa",
+    "x509"
+  ],
+  "authors": [
+    {
+      "name": "Andrew Svirin"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=7.4",
+    "ext-dom": "*",
+    "ext-openssl": "*",
+    "ext-zlib": "*",
+    "ext-json": "*",
+    "phpseclib/phpseclib": ">=2.0.27",
+    "symfony/http-client": "^4.3||^5.0",
+    "thecodingmachine/safe": "^1.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^0.12",
+    "phpunit/phpunit": "^9.2.6",
+    "infection/infection": "^0.15||^0.17.5",
+    "doctrine/coding-standard": "^8.1",
+    "roave/backward-compatibility-check": "^3.0||^5.0",
+    "seromenho/xml-validator": "^1.0",
+    "ocramius/package-versions": "^1.9.0 || ^2.0.0",
+    "vimeo/psalm": "^3.16"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cube43\\Ebics\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Cube43\\Ebics\\Tests\\": "tests"
+    }
+  },
+  "suggest": {
+    "silarhi/cfonb-parser": "If you need to parse CFONB datas from French Bank",
+    "andrew-svirin/mt942-php": "If you need to parse format MT942 from VMK, STA requests."
+  }
+}
