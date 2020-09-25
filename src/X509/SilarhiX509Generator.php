@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\X509;
+namespace Fezfez\Ebics\X509;
 
 /**
  * Legacy X509 certificate generator @see X509Generator.

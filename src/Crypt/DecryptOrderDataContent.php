@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\Crypt;
+namespace Fezfez\Ebics\Crypt;
 
-use Cube43\Ebics\DOMDocument;
-use Cube43\Ebics\KeyRing;
-use Cube43\Ebics\OrderDataEncrypted;
+use Fezfez\Ebics\DOMDocument;
+use Fezfez\Ebics\KeyRing;
+use Fezfez\Ebics\OrderDataEncrypted;
 use phpseclib\Crypt\AES;
 use phpseclib\Crypt\RSA;
 use RuntimeException;

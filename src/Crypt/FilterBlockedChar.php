@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\Crypt;
+namespace Fezfez\Ebics\Crypt;
 
 use function array_merge;
 use function array_values;

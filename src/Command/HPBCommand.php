@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\Command;
+namespace Fezfez\Ebics\Command;
 
-use Cube43\Ebics\Bank;
-use Cube43\Ebics\BankCertificate;
-use Cube43\Ebics\CertificateX509;
-use Cube43\Ebics\CertificatType;
-use Cube43\Ebics\Crypt\DecryptOrderDataContent;
-use Cube43\Ebics\Crypt\EncrytSignatureValueWithUserPrivateKey;
-use Cube43\Ebics\DOMDocument;
-use Cube43\Ebics\EbicsServerCaller;
-use Cube43\Ebics\KeyRing;
-use Cube43\Ebics\OrderDataEncrypted;
-use Cube43\Ebics\RenderXml;
-use Cube43\Ebics\User;
+use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\BankCertificate;
+use Fezfez\Ebics\CertificateX509;
+use Fezfez\Ebics\CertificatType;
+use Fezfez\Ebics\Crypt\DecryptOrderDataContent;
+use Fezfez\Ebics\Crypt\EncrytSignatureValueWithUserPrivateKey;
+use Fezfez\Ebics\DOMDocument;
+use Fezfez\Ebics\EbicsServerCaller;
+use Fezfez\Ebics\KeyRing;
+use Fezfez\Ebics\OrderDataEncrypted;
+use Fezfez\Ebics\RenderXml;
+use Fezfez\Ebics\User;
 use DateTime;
 use phpseclib\Crypt\Random;
 use phpseclib\Crypt\RSA;

@@ -13,6 +13,7 @@
   ],
   "authors": [
     {
+      "name": "Stéphane Demonchaux",
       "name": "Andrew Svirin"
     }
   ],
@@ -39,12 +40,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Cube43\\Ebics\\": "src"
+      "Fezfez\\Ebics\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Cube43\\Ebics\\Tests\\": "tests"
+      "Fezfez\\Ebics\\Tests\\": "tests"
     }
   },
   "suggest": {

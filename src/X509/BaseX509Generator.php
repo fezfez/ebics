@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\X509;
+namespace Fezfez\Ebics\X509;
 
-use Cube43\Ebics\X509Generator;
+use Fezfez\Ebics\X509Generator;
 use DateTimeImmutable;
 use DateTimeInterface;
 use phpseclib\Crypt\RSA;

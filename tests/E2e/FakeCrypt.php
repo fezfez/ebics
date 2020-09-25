@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\Tests\E2e;
+namespace Fezfez\Ebics\Tests\E2e;
 
 class FakeCrypt
 {

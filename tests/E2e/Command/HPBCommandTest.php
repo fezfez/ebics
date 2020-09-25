@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\E2e\Command;
+namespace Fezfez\Ebics\E2e\Command;
 
-use Cube43\Ebics\Bank;
-use Cube43\Ebics\CertificateX509;
-use Cube43\Ebics\CertificatType;
-use Cube43\Ebics\Command\HPBCommand;
-use Cube43\Ebics\Crypt\FilterBlockedChar;
-use Cube43\Ebics\EbicsServerCaller;
-use Cube43\Ebics\KeyRing;
-use Cube43\Ebics\PrivateKey;
-use Cube43\Ebics\Tests\E2e\FakeCrypt;
-use Cube43\Ebics\User;
-use Cube43\Ebics\UserCertificate;
-use Cube43\Ebics\Version;
+use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\CertificateX509;
+use Fezfez\Ebics\CertificatType;
+use Fezfez\Ebics\Command\HPBCommand;
+use Fezfez\Ebics\Crypt\FilterBlockedChar;
+use Fezfez\Ebics\EbicsServerCaller;
+use Fezfez\Ebics\KeyRing;
+use Fezfez\Ebics\PrivateKey;
+use Fezfez\Ebics\Tests\E2e\FakeCrypt;
+use Fezfez\Ebics\User;
+use Fezfez\Ebics\UserCertificate;
+use Fezfez\Ebics\Version;
 use DOMDocument;
 use DOMNode;
 use phpseclib\Crypt\RSA;

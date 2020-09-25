@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\Crypt;
+namespace Fezfez\Ebics\Crypt;
 
-use Cube43\Ebics\Password;
-use Cube43\Ebics\PrivateKey;
+use Fezfez\Ebics\Password;
+use Fezfez\Ebics\PrivateKey;
 use phpseclib\Crypt\RSA;
 use RuntimeException;
 

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Cube43\Ebics\E2e\Command;
+namespace Fezfez\Ebics\E2e\Command;
 
-use Cube43\Ebics\Bank;
-use Cube43\Ebics\Command\INICommand;
-use Cube43\Ebics\EbicsServerCaller;
-use Cube43\Ebics\KeyRing;
-use Cube43\Ebics\User;
-use Cube43\Ebics\Version;
-use Cube43\Ebics\X509\SilarhiX509Generator;
+use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\Command\INICommand;
+use Fezfez\Ebics\EbicsServerCaller;
+use Fezfez\Ebics\KeyRing;
+use Fezfez\Ebics\User;
+use Fezfez\Ebics\Version;
+use Fezfez\Ebics\X509\SilarhiX509Generator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
