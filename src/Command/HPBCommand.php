@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Command;
 
+use DateTime;
 use Fezfez\Ebics\Bank;
 use Fezfez\Ebics\BankCertificate;
 use Fezfez\Ebics\CertificateX509;
@@ -16,7 +17,6 @@ use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
 use Fezfez\Ebics\RenderXml;
 use Fezfez\Ebics\User;
-use DateTime;
 use phpseclib\Crypt\Random;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;

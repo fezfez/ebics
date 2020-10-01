@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Command;
 
+use DateTime;
 use Fezfez\Ebics\Bank;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Crypt\GenerateCertificat;
@@ -12,7 +13,6 @@ use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\RenderXml;
 use Fezfez\Ebics\User;
 use Fezfez\Ebics\X509Generator;
-use DateTime;
 
 use function base64_encode;
 use function Safe\gzcompress;

@@ -8,7 +8,13 @@ use phpseclib\Crypt\RSA;
 use phpseclib\File\X509;
 use RuntimeException;
 
+use function array_map;
 use function array_shift;
+use function implode;
+use function openssl_x509_fingerprint;
+use function str_split;
+use function strtoupper;
+use function wordwrap;
 
 /**
  * Class CertificateX509 represents Certificate model in X509 structure.
@@ -34,6 +40,23 @@ class CertificateX509 extends X509
     public function value(): string
     {
         return $this->value;
+    }
+
+    public function digest(): string
+    {
+        $fingerPrint = openssl_x509_fingerprint($this->value, 'sha256');
+
+        if ($fingerPrint === false) {
+            throw new RuntimeException('unable to calculate fingerprint');
+        }
+
+        $digest  = strtoupper($fingerPrint);
+        $digests = str_split($digest, 16);
+        $digests = array_map(static function ($digest) {
+            return wordwrap($digest, 2, ' ', true);
+        }, $digests);
+
+        return implode("\n", $digests);
     }
 
     /**

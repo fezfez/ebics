@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Command;
 
+use DateTime;
 use Fezfez\Ebics\Bank;
 use Fezfez\Ebics\Crypt\BankPublicKeyDigest;
 use Fezfez\Ebics\Crypt\DecryptOrderDataContent;
@@ -14,7 +15,6 @@ use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
 use Fezfez\Ebics\RenderXml;
 use Fezfez\Ebics\User;
-use DateTime;
 use phpseclib\Crypt\Random;
 
 use function base64_decode;

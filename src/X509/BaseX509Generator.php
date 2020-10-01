@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\X509;
 
-use Fezfez\Ebics\X509Generator;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Fezfez\Ebics\X509Generator;
 use phpseclib\Crypt\RSA;
 use phpseclib\File\X509;
 use RuntimeException;
