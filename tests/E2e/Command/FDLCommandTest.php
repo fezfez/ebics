@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fezfez\Ebics\E2e\Command;
+namespace Fezfez\Ebics\Tests\E2e\Command;
 
 use DOMDocument;
 use DOMNode;
