@@ -6,9 +6,9 @@ PHP library to communicate with bank through EBICS protocol.
 fezfez/ebics is licensed under the MIT License, see the LICENSE file for details
 
 ## Note
-This library is a re work of andrew-svirin/ebics-client-php to allow multiple protocol version + unit test and E2e test
+This library is a refactoring of andrew-svirin/ebics-client-php to allow multiple protocol version + unit test and E2e test
 
-Version supported :
+Ebics protocol version supported :
 
 - 2.4
 - 2.5
@@ -24,6 +24,7 @@ Command supported :
 This library work only with X509 certified communication
 
 ## Installation
+
 ```bash
 composer require fezfez/ebics
 ```
