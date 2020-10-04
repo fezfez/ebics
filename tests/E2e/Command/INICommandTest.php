@@ -38,7 +38,7 @@ class INICommandTest extends TestCase
 
 /*
             $xmlValidator = new XmlValidator();
-            $isValid      = $xmlValidator->validate($response, $versionToXsd);
+            $isValid      = $xmlValidator->validate($response, $versionToXsd[$version->value()]);
 
             self::assertTrue($isValid, print_r($xmlValidator->errors, true));
 */

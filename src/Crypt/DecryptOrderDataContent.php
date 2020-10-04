@@ -23,7 +23,9 @@ class DecryptOrderDataContent
         $rsa->setPassword($keyRing->getPassword()->value());
         $rsa->loadKey($keyRing->getUserCertificateE()->getPrivateKey()->value());
         $rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
+
         $transactionKeyDecrypted = $rsa->decrypt($orderData->getTransactionKey());
+
         // aes-128-cbc encrypting format.
         $aes = new AES(AES::MODE_CBC);
         $aes->setKeyLength(128);

@@ -7,8 +7,8 @@ namespace Fezfez\Ebics;
 use JsonSerializable;
 use phpseclib\Crypt\RSA;
 
-use function base64_decode;
 use function base64_encode;
+use function Safe\base64_decode;
 
 class UserCertificate implements JsonSerializable
 {

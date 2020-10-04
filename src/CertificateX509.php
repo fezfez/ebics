@@ -11,7 +11,8 @@ use RuntimeException;
 use function array_map;
 use function array_shift;
 use function implode;
-use function openssl_x509_fingerprint;
+use function is_array;
+use function Safe\openssl_x509_fingerprint;
 use function str_split;
 use function strtoupper;
 use function wordwrap;
@@ -44,13 +45,7 @@ class CertificateX509 extends X509
 
     public function digest(): string
     {
-        $fingerPrint = openssl_x509_fingerprint($this->value, 'sha256');
-
-        if ($fingerPrint === false) {
-            throw new RuntimeException('unable to calculate fingerprint');
-        }
-
-        $digest  = strtoupper($fingerPrint);
+        $digest  = strtoupper(openssl_x509_fingerprint($this->value, 'sha256'));
         $digests = str_split($digest, 16);
         $digests = array_map(static function ($digest) {
             return wordwrap($digest, 2, ' ', true);
@@ -75,6 +70,10 @@ class CertificateX509 extends X509
     public function getInsurerName(): string
     {
         $certificateInsurerName = $this->getIssuerDNProp('id-at-commonName');
+
+        if (! is_array($certificateInsurerName) || empty($certificateInsurerName)) {
+            throw new RuntimeException('unable to get id-at-commonName from certificate');
+        }
 
         return array_shift($certificateInsurerName);
     }
