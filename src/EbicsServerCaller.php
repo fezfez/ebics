@@ -8,10 +8,6 @@ use Exception;
 use Symfony\Component\HttpClient\HttpClient as SymfonyClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-use function str_replace;
-use function strpos;
-use function strstr;
-
 class EbicsServerCaller
 {
     private HttpClientInterface $httpClient;
@@ -30,8 +26,10 @@ class EbicsServerCaller
             'verify_host' => false,
         ])->getContent();
 
-        if (! strpos($result, '<ReturnCode>000000</ReturnCode>')) {
-            throw new Exception('Error' . strstr(str_replace('<ReportText>', '', (strstr($result, '<ReportText>') ?? '')), '</ReportText>', true));
+        $resultXml = new DOMDocument($result);
+
+        if ($resultXml->getNodeValue('ReturnCode') !== '000000') {
+            throw new Exception('Error' . $resultXml->getNodeValue('ReportText'));
         }
 
         return $result;

@@ -30,7 +30,9 @@ class DecryptOrderDataContent
         $aes = new AES(AES::MODE_CBC);
         $aes->setKeyLength(128);
         $aes->setKey($transactionKeyDecrypted);
+
         // Force openssl_options.
+        // phpcs:ignore
         $aes->openssl_options = OPENSSL_ZERO_PADDING;
 
         $decrypted = $aes->decrypt($orderData->getOrderData());

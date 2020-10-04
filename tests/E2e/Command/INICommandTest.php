@@ -9,6 +9,7 @@ use Fezfez\Ebics\Command\INICommand;
 use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\User;
+use Fezfez\Ebics\UserCertificate;
 use Fezfez\Ebics\Version;
 use Fezfez\Ebics\X509\SilarhiX509Generator;
 use PHPUnit\Framework\TestCase;
@@ -60,13 +61,15 @@ class INICommandTest extends TestCase
         };
 
         $sUT = new INICommand(
-            new EbicsServerCaller(new MockHttpClient($this->getCallback('fzefze<ReturnCode>000000</ReturnCode>fzfzefze', $version, $tocheck)))
+            new EbicsServerCaller(new MockHttpClient($this->getCallback('<ReturnCode>000000</ReturnCode>', $version, $tocheck)))
         );
 
         $bank    = new Bank('myHostId', 'http://myurl.com', $version);
         $user    = new User('myPartId', 'myUserId');
         $keyRing = new KeyRing('');
 
-        $sUT->__invoke($bank, $user, $keyRing, new SilarhiX509Generator());
+        $keyRing = $sUT->__invoke($bank, $user, $keyRing, new SilarhiX509Generator());
+
+        self::assertInstanceOf(UserCertificate::class, $keyRing->getUserCertificateA());
     }
 }

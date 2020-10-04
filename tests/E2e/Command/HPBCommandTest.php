@@ -7,6 +7,7 @@ namespace Fezfez\Ebics\E2e\Command;
 use DOMDocument;
 use DOMNode;
 use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\BankCertificate;
 use Fezfez\Ebics\CertificateX509;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Command\HPBCommand;
@@ -138,6 +139,9 @@ class HPBCommandTest extends TestCase
             )
         );
 
-        $sUT->__invoke($bank, $user, $keyRing);
+        $keyRing = $sUT->__invoke($bank, $user, $keyRing);
+
+        self::assertInstanceOf(BankCertificate::class, $keyRing->getBankCertificateX());
+        self::assertInstanceOf(BankCertificate::class, $keyRing->getBankCertificateE());
     }
 }
