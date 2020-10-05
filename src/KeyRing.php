@@ -127,25 +127,27 @@ class KeyRing implements JsonSerializable
     {
         $keyring = new self($password);
 
-        if (array_key_exists('bankCertificateE', $data) && ! empty($data['bankCertificateE'])) {
-            $keyring->bankCertificateE = BankCertificate::fromArray($data['bankCertificateE']);
-        }
+        $buildBankCertificate = static function (string $key) use ($data): ?BankCertificate {
+            if (array_key_exists($key, $data) && ! empty($data[$key])) {
+                return BankCertificate::fromArray($data[$key]);
+            }
 
-        if (array_key_exists('bankCertificateX', $data) && ! empty($data['bankCertificateX'])) {
-            $keyring->bankCertificateX = BankCertificate::fromArray($data['bankCertificateX']);
-        }
+            return null;
+        };
 
-        if (array_key_exists('userCertificateA', $data) && ! empty($data['userCertificateA'])) {
-            $keyring->userCertificateA = UserCertificate::fromArray($data['userCertificateA']);
-        }
+        $buildUserCertificate = static function (string $key) use ($data): ?UserCertificate {
+            if (array_key_exists($key, $data) && ! empty($data[$key])) {
+                return UserCertificate::fromArray($data[$key]);
+            }
 
-        if (array_key_exists('userCertificateE', $data) && ! empty($data['userCertificateE'])) {
-            $keyring->userCertificateE = UserCertificate::fromArray($data['userCertificateE']);
-        }
+            return null;
+        };
 
-        if (array_key_exists('userCertificateX', $data) && ! empty($data['userCertificateX'])) {
-            $keyring->userCertificateX = UserCertificate::fromArray($data['userCertificateX']);
-        }
+        $keyring->bankCertificateE = $buildBankCertificate('bankCertificateE');
+        $keyring->bankCertificateX = $buildBankCertificate('bankCertificateX');
+        $keyring->userCertificateA = $buildUserCertificate('userCertificateA');
+        $keyring->userCertificateE = $buildUserCertificate('userCertificateE');
+        $keyring->userCertificateX = $buildUserCertificate('userCertificateX');
 
         return $keyring;
     }
