@@ -14,18 +14,14 @@ use function defined;
 
 class EncrytSignatureValueWithUserPrivateKey
 {
-    private FilterBlockedChar $filterBlockedChar;
+    private AddRsaSha256PrefixAndReturnAsBinary $addRsaSha256PrefixAndReturnAsBinary;
 
     public function __construct()
     {
-        $this->filterBlockedChar = new FilterBlockedChar();
+        $this->addRsaSha256PrefixAndReturnAsBinary = new AddRsaSha256PrefixAndReturnAsBinary();
     }
 
     /**
-     * Calculate signatureValue by encrypting Signature value with user Private key.
-     *
-     * @return string Base64 encoded
-     *
      * @throws RuntimeException
      */
     public function __invoke(Password $password, PrivateKey $key, string $hash): string
@@ -39,7 +35,7 @@ class EncrytSignatureValueWithUserPrivateKey
         }
 
         $rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $encrypted = $rsa->encrypt($this->filterBlockedChar->__invoke($hash));
+        $encrypted = $rsa->encrypt($this->addRsaSha256PrefixAndReturnAsBinary->__invoke($hash));
 
         if (empty($encrypted)) {
             throw new RuntimeException('Incorrect authorization.');

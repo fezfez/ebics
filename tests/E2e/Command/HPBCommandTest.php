@@ -11,7 +11,7 @@ use Fezfez\Ebics\BankCertificate;
 use Fezfez\Ebics\CertificateX509;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Command\HPBCommand;
-use Fezfez\Ebics\Crypt\FilterBlockedChar;
+use Fezfez\Ebics\Crypt\AddRsaSha256PrefixAndReturnAsBinary;
 use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\PrivateKey;
@@ -90,7 +90,7 @@ class HPBCommandTest extends TestCase
 
                 $rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
 
-                return $rsa->encrypt((new FilterBlockedChar())->__invoke($ciphertext));
+                return $rsa->encrypt((new AddRsaSha256PrefixAndReturnAsBinary())->__invoke($ciphertext));
             };
 
             $signatureOk = static function ($signatureRaw, $signatureValue) use ($crpyt) {

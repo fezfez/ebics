@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Tests\Unit\Crypt;
 
-use Fezfez\Ebics\Crypt\FilterBlockedChar;
+use Fezfez\Ebics\Crypt\AddRsaSha256PrefixAndReturnAsBinary;
 use PHPUnit\Framework\TestCase;
 
 use function bin2hex;
@@ -13,7 +13,7 @@ class FilterBlockedCharTest extends TestCase
 {
     public function testOk(): void
     {
-        $sUT = new FilterBlockedChar();
+        $sUT = new AddRsaSha256PrefixAndReturnAsBinary();
 
         self::assertSame('3031300d06096086480165030402010500042074657374', bin2hex($sUT->__invoke('test')));
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Fezfez\Ebics\Tests\Functional;
 
 use Fezfez\Ebics\CertificatType;
+use Fezfez\Ebics\Crypt\AddRsaSha256PrefixAndReturnAsBinary;
 use Fezfez\Ebics\Crypt\DecryptOrderDataContent;
 use Fezfez\Ebics\Crypt\EncrytSignatureValueWithUserPrivateKey;
-use Fezfez\Ebics\Crypt\FilterBlockedChar;
 use Fezfez\Ebics\Crypt\GenerateCertificat;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
@@ -35,7 +35,7 @@ class CryptAndDecryptDataTest extends TestCase
         $certE          = $generateCert->__invoke(new SilarhiX509Generator(), $password, CertificatType::e());
         $transactionKey = $encrypted->__invoke($password, new PrivateKey($certE->getPublicKey()), $xmlData);
 
-        $orderData = $this->aesCrypt((new FilterBlockedChar())->__invoke($xmlData), gzcompress($xmlData));
+        $orderData = $this->aesCrypt((new AddRsaSha256PrefixAndReturnAsBinary())->__invoke($xmlData), gzcompress($xmlData));
 
         $keyRing = new KeyRing('myPass');
         $keyRing->setUserCertificateEAndX($certE, $certE);
