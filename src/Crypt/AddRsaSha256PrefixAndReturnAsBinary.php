@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Crypt;
 
-use function pack;
-use function unpack;
+use function Safe\pack;
+use function Safe\unpack;
 
 class AddRsaSha256PrefixAndReturnAsBinary
 {
