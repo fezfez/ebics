@@ -13,6 +13,7 @@ use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Command\FDLCommand;
 use Fezfez\Ebics\Crypt\AddRsaSha256PrefixAndReturnAsBinary;
 use Fezfez\Ebics\EbicsServerCaller;
+use Fezfez\Ebics\FDLParams;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\PrivateKey;
 use Fezfez\Ebics\Tests\E2e\FakeCrypt;
@@ -149,6 +150,6 @@ class FDLCommandTest extends TestCase
             ),
         );
 
-        $sUT->__invoke($bank, $user, $keyRing);
+        $sUT->__invoke($bank, $user, $keyRing, new FDLParams('test', 'FR'));
     }
 }

@@ -11,6 +11,7 @@ use Fezfez\Ebics\Crypt\DecryptOrderDataContent;
 use Fezfez\Ebics\Crypt\EncrytSignatureValueWithUserPrivateKey;
 use Fezfez\Ebics\DOMDocument;
 use Fezfez\Ebics\EbicsServerCaller;
+use Fezfez\Ebics\FDLParams;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
 use Fezfez\Ebics\RenderXml;
@@ -43,7 +44,7 @@ class FDLCommand
         $this->bankPublicKeyDigest                  = new BankPublicKeyDigest();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing): string
+    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams): string
     {
         $search = [
             '{{HostID}}' => $bank->getHostId(),
@@ -53,8 +54,8 @@ class FDLCommand
             '{{UserID}}' => $user->getUserId(),
             '{{BankPubKeyDigestsEncryption}}' => $this->bankPublicKeyDigest->__invoke($keyRing->getBankCertificateE()),
             '{{BankPubKeyDigestsAuthentication}}' => $this->bankPublicKeyDigest->__invoke($keyRing->getBankCertificateX()),
-            '{{FileFormat}}' => 'test',
-            '{{CountryCode}}' => 'FR',
+            '{{FileFormat}}' => $FDLParams->fileFormat(),
+            '{{CountryCode}}' => $FDLParams->countryCode(),
         ];
 
         $search['{{rawDigest}}']         = $this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'FDL_digest.xml');
