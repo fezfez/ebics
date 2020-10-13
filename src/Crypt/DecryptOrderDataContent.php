@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Crypt;
 
-use Fezfez\Ebics\DOMDocument;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
 use phpseclib\Crypt\AES;
@@ -17,7 +16,7 @@ use const OPENSSL_ZERO_PADDING;
 
 class DecryptOrderDataContent
 {
-    public function __invoke(KeyRing $keyRing, OrderDataEncrypted $orderData): DOMDocument
+    public function __invoke(KeyRing $keyRing, OrderDataEncrypted $orderData): string
     {
         $rsa = new RSA();
         $rsa->setPassword($keyRing->getPassword()->value());
@@ -41,6 +40,6 @@ class DecryptOrderDataContent
             throw new RuntimeException('decrypt error');
         }
 
-        return new DOMDocument(gzuncompress($decrypted));
+        return gzuncompress($decrypted);
     }
 }

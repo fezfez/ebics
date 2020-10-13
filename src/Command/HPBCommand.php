@@ -78,6 +78,8 @@ class HPBCommand
             )
         );
 
+        $decryptedResponse = new DOMDocument($decryptedResponse);
+
         $keyRing->setBankCertificate(
             $this->cert($decryptedResponse, CertificatType::x(), 'AuthenticationPubKeyInfo'),
             $this->cert($decryptedResponse, CertificatType::e(), 'EncryptionPubKeyInfo'),

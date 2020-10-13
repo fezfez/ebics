@@ -9,6 +9,7 @@ use Fezfez\Ebics\Crypt\AddRsaSha256PrefixAndReturnAsBinary;
 use Fezfez\Ebics\Crypt\DecryptOrderDataContent;
 use Fezfez\Ebics\Crypt\EncrytSignatureValueWithUserPrivateKey;
 use Fezfez\Ebics\Crypt\GenerateCertificat;
+use Fezfez\Ebics\DOMDocument;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
 use Fezfez\Ebics\Password;
@@ -40,7 +41,7 @@ class CryptAndDecryptDataTest extends TestCase
         $keyRing = new KeyRing('myPass');
         $keyRing->setUserCertificateEAndX($certE, $certE);
 
-        self::assertXmlStringEqualsXmlString($xmlData, $decryptOrderDataContent->__invoke($keyRing, new OrderDataEncrypted($orderData, $transactionKey))->toString());
+        self::assertXmlStringEqualsXmlString($xmlData, (new DOMDocument($decryptOrderDataContent->__invoke($keyRing, new OrderDataEncrypted($orderData, $transactionKey))))->toString());
     }
 
     private function aesCrypt(string $key, string $cypher): string

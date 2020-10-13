@@ -44,9 +44,32 @@ class FDLCommand
         $this->bankPublicKeyDigest                  = new BankPublicKeyDigest();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams): string
+    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams, callable $handler): void
+    {
+        $ebicsServerResponse = $this->callFDL($bank, $user, $keyRing, $FDLParams);
+
+        if ($ebicsServerResponse->getNodeValue('ReportText') === '[EBICS_OK] No download data available') {
+            return;
+        }
+
+        $handler(
+            $this->decryptOrderDataContent->__invoke(
+                $keyRing,
+                new OrderDataEncrypted(
+                    $ebicsServerResponse->getNodeValue('OrderData'),
+                    base64_decode($ebicsServerResponse->getNodeValue('TransactionKey'))
+                )
+            )
+        );
+
+        $this->callAknow($bank, $user, $keyRing, $FDLParams, $ebicsServerResponse);
+    }
+
+    private function callFDL(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams): DOMDocument
     {
         $search = [
+            '{{StartDate}}' => $FDLParams->getStartDate()->format('Y-m-d'),
+            '{{EndDate}}' => $FDLParams->getEndDate()->format('Y-m-d'),
             '{{HostID}}' => $bank->getHostId(),
             '{{Nonce}}' => strtoupper(bin2hex(Random::string(16))),
             '{{Timestamp}}' => (new DateTime())->format('Y-m-d\TH:i:s\Z'),
@@ -69,22 +92,39 @@ class FDLCommand
             )
         );
 
-        $ebicsServerResponse = new DOMDocument(
+        return new DOMDocument(
             $this->ebicsServerCaller->__invoke($this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'FDL.xml'), $bank)
         );
+    }
 
-        if ($ebicsServerResponse->getNodeValue('ReportText') === '[EBICS_OK] No download data available') {
-            return '';
-        }
+    private function callAknow(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams, DOMDocument $response): DOMDocument
+    {
+        $search = [
+            '{{TransactionID}}' => $response->getNodeValue('TransactionID'),
+            '{{HostID}}' => $bank->getHostId(),
+            '{{Nonce}}' => strtoupper(bin2hex(Random::string(16))),
+            '{{Timestamp}}' => (new DateTime())->format('Y-m-d\TH:i:s\Z'),
+            '{{PartnerID}}' => $user->getPartnerId(),
+            '{{UserID}}' => $user->getUserId(),
+            '{{BankPubKeyDigestsEncryption}}' => $this->bankPublicKeyDigest->__invoke($keyRing->getBankCertificateE()),
+            '{{BankPubKeyDigestsAuthentication}}' => $this->bankPublicKeyDigest->__invoke($keyRing->getBankCertificateX()),
+            '{{FileFormat}}' => $FDLParams->fileFormat(),
+            '{{CountryCode}}' => $FDLParams->countryCode(),
+        ];
 
-        $decryptedResponse = $this->decryptOrderDataContent->__invoke(
-            $keyRing,
-            new OrderDataEncrypted(
-                $ebicsServerResponse->getNodeValue('OrderData'),
-                base64_decode($ebicsServerResponse->getNodeValue('TransactionKey'))
+        $search['{{rawDigest}}']         = $this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'FDL_aknowledgement_digest.xml');
+        $search['{{DigestValue}}']       = base64_encode(hash('sha256', $search['{{rawDigest}}'], true));
+        $search['{{RawSignatureValue}}'] = $this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'FDL_aknowlgement_SignatureValue.xml');
+        $search['{{SignatureValue}}']    = base64_encode(
+            $this->cryptStringWithPasswordAndCertificat->__invoke(
+                $keyRing->getPassword(),
+                $keyRing->getUserCertificateX()->getPrivateKey(),
+                hash('sha256', $search['{{RawSignatureValue}}'], true)
             )
         );
 
-        return $decryptedResponse->getFormattedContent();
+        return new DOMDocument(
+            $this->ebicsServerCaller->__invoke($this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'FDL_acknowledgement.xml'), $bank)
+        );
     }
 }

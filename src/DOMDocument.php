@@ -9,6 +9,7 @@ use RuntimeException;
 use Throwable;
 
 use function assert;
+use function error_get_last;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -23,7 +24,11 @@ class DOMDocument
     {
         $document = new \DOMDocument('1.0', 'utf-8');
         try {
-            $document->loadXML($content);
+            $return = @$document->loadXML($content);
+
+            if ($return !== true) {
+                throw new RuntimeException(error_get_last()['message'] ?? 'An error occured');
+            }
         } catch (Throwable $exception) {
             throw new RuntimeException($content, 0, $exception);
         }

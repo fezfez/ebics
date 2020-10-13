@@ -19,16 +19,16 @@ use function Safe\gzcompress;
 
 class INICommand
 {
-    private EbicsServerCaller $httpClient;
+    private EbicsServerCaller $ebicsServerCaller;
     private GenerateCertificat $generateCertificat;
     private RenderXml $renderXml;
 
     public function __construct(
-        ?EbicsServerCaller $httpClient = null,
+        ?EbicsServerCaller $ebicsServerCaller = null,
         ?GenerateCertificat $generateCertificat = null,
         ?RenderXml $renderXml = null
     ) {
-        $this->httpClient         = $httpClient ?? new EbicsServerCaller();
+        $this->ebicsServerCaller  = $ebicsServerCaller ?? new EbicsServerCaller();
         $this->generateCertificat = $generateCertificat ?? new GenerateCertificat();
         $this->renderXml          = $renderXml ?? new RenderXml();
     }
@@ -51,7 +51,7 @@ class INICommand
 
         $search['{{OrderData}}'] = base64_encode(gzcompress($this->renderXml->__invoke($search, $bank->getVersion(), 'INI_OrderData.xml')->toString()));
 
-        $this->httpClient->__invoke($this->renderXml->__invoke($search, $bank->getVersion(), 'INI.xml')->toString(), $bank);
+        $this->ebicsServerCaller->__invoke($this->renderXml->__invoke($search, $bank->getVersion(), 'INI.xml')->toString(), $bank);
 
         return $keyRing;
     }
