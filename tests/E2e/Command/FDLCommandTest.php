@@ -96,7 +96,7 @@ class FDLCommandTest extends E2eTestBase
         ];
 
         $sUT = new FDLCommand(
-            new EbicsServerCaller(new MockHttpClient($this->getCallback($versionToXmlResponse[$version->value()], $version, $this->getSignatureAssertCallback())))
+            new EbicsServerCaller(new MockHttpClient($this->getCallback($versionToXmlResponse[$version->value()], $version, true)))
         );
 
         $bank    = new Bank('myHostId', 'http://myurl.com', $version);

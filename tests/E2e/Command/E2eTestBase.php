@@ -22,12 +22,13 @@ use function define;
 use function defined;
 use function hash;
 use function print_r;
+use function Safe\sprintf;
 
 class E2eTestBase extends TestCase
 {
-    protected function getCallback(string $response, Version $version, callable $requestCallback): array
+    protected function getCallback(string $response, Version $version, bool $assertSigature): array
     {
-        $callback = static function ($method, $url, $options) use ($response, $version, $requestCallback) {
+        $callback = function ($method, $url, $options) use ($response, $version, $assertSigature) {
             $versionToXsd = [
                 Version::v24()->value() => __DIR__ . '/../xsd/24/H003/ebics.xsd',
                 Version::v25()->value()  => __DIR__ . '/../xsd/25/ebics_H004.xsd',
@@ -39,7 +40,10 @@ class E2eTestBase extends TestCase
 
             self::assertTrue($isValid, print_r($xmlValidator->errors, true));
 
-            $requestCallback($options['body']);
+            if ($assertSigature) {
+                $signatureCallback = $this->getSignatureAssertCallback();
+                $signatureCallback($options['body']);
+            }
 
             $xmlValidator = new XmlValidator();
             $isValid      = $xmlValidator->validate($response, $versionToXsd[$version->value()]);
@@ -84,7 +88,7 @@ class E2eTestBase extends TestCase
                 $node = $xml->getElementsByTagName($nodeName)->item(0);
 
                 if ($node === null) {
-                    throw new RuntimeException('node not found');
+                    throw new RuntimeException(sprintf('node "%s" not found', $nodeName));
                 }
 
                 return $node;

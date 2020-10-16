@@ -21,7 +21,7 @@ class RenderXmlTest extends TestCase
             <HostID>b</HostID>
             <PartnerID>{{PartnerID}}</PartnerID>
             <UserID>{{UserID}}</UserID>
-            <Product Language="de">Ebics client PHP</Product>
+            <Product Language="fr">Cube43 Ebics client PHP</Product>
             <OrderDetails>
                 <OrderType>INI</OrderType>
                 <OrderID>A102</OrderID>
@@ -50,7 +50,7 @@ class RenderXmlTest extends TestCase
             <HostID>b</HostID>
             <PartnerID>{{PartnerID}}</PartnerID>
             <UserID>{{UserID}}</UserID>
-            <Product Language="de">Ebics client PHP</Product>
+            <Product Language="fr">Cube43 Ebics client PHP</Product>
             <OrderDetails>
                 <OrderType>INI</OrderType>
                 <OrderID>A102</OrderID>

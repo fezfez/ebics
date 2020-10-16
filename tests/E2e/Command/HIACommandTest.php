@@ -32,8 +32,7 @@ class HIACommandTest extends E2eTestBase
         ];
 
         $sUT = new HIACommand(
-            new EbicsServerCaller(new MockHttpClient($this->getCallback($versionToXmlResponse[$version->value()], $version, static function (): void {
-            })))
+            new EbicsServerCaller(new MockHttpClient($this->getCallback($versionToXmlResponse[$version->value()], $version, false)))
         );
 
         $bank    = new Bank('myHostId', 'http://myurl.com', $version);
