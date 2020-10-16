@@ -44,7 +44,7 @@ class FDLCommand
         $this->bankPublicKeyDigest                  = new BankPublicKeyDigest();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams, callable $handler): void
+    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams, callable $handler, bool $sendRecip = false): void
     {
         $ebicsServerResponse = $this->callFDL($bank, $user, $keyRing, $FDLParams);
 
@@ -62,7 +62,9 @@ class FDLCommand
             )
         );
 
-        $this->callAknow($bank, $user, $keyRing, $FDLParams, $ebicsServerResponse);
+        if ($sendRecip) {
+            $this->callAknow($bank, $user, $keyRing, $FDLParams, $ebicsServerResponse);
+        }
     }
 
     private function callFDL(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams): DOMDocument
