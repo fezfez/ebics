@@ -62,9 +62,11 @@ class FDLCommand
             )
         );
 
-        if ($sendRecip) {
-            $this->callAknow($bank, $user, $keyRing, $FDLParams, $ebicsServerResponse);
+        if (! $sendRecip) {
+            return;
         }
+
+        $this->callAknow($bank, $user, $keyRing, $FDLParams, $ebicsServerResponse);
     }
 
     private function callFDL(Bank $bank, User $user, KeyRing $keyRing, FDLParams $FDLParams): DOMDocument
