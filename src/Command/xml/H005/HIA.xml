@@ -5,7 +5,7 @@
             <HostID>{{HostID}}</HostID>
             <PartnerID>{{PartnerID}}</PartnerID>
             <UserID>{{UserID}}</UserID>
-            <Product Language="de">Ebics client PHP</Product>
+            <Product Language="fr">Cube43 Ebics client PHP</Product>
             <OrderDetails>
                 <AdminOrderType>HIA</AdminOrderType>
             </OrderDetails>
