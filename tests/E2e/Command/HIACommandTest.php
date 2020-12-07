@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Tests\E2e\Command;
 
-use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\BankInfo;
 use Fezfez\Ebics\Command\HIACommand;
 use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
-use Fezfez\Ebics\User;
 use Fezfez\Ebics\UserCertificate;
 use Fezfez\Ebics\Version;
-use Fezfez\Ebics\X509\SilarhiX509Generator;
+use Fezfez\Ebics\X509\DefaultX509OptionGenerator;
 use Symfony\Component\HttpClient\MockHttpClient;
 
 class HIACommandTest extends E2eTestBase
@@ -38,11 +37,10 @@ class HIACommandTest extends E2eTestBase
             new EbicsServerCaller(new MockHttpClient($this->getCallback($versionToXmlResponse[$version->value()], $version, false)))
         );
 
-        $bank    = new Bank('myHostId', 'http://myurl.com', $version);
-        $user    = new User('myPartId', 'myUserId');
+        $bank    = new BankInfo('myHostId', 'http://myurl.com', $version, 'myPartId', 'myUserId');
         $keyRing = new KeyRing('');
 
-        $keyring = $sUT->__invoke($bank, $user, $keyRing, new SilarhiX509Generator());
+        $keyring = $sUT->__invoke($bank, $keyRing, new DefaultX509OptionGenerator());
 
         self::assertInstanceOf(UserCertificate::class, $keyring->getUserCertificateX());
         self::assertInstanceOf(UserCertificate::class, $keyring->getUserCertificateE());

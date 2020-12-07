@@ -16,6 +16,9 @@ use function strpos;
 use function substr;
 use function trim;
 
+/**
+ * @internal
+ */
 class DOMDocument
 {
     private \DOMDocument $document;

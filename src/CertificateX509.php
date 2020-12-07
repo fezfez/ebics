@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics;
 
-use phpseclib\Crypt\RSA;
 use phpseclib\File\X509;
 use RuntimeException;
 
 use function array_map;
 use function array_shift;
+use function hash;
 use function implode;
 use function is_array;
 use function Safe\openssl_x509_fingerprint;
@@ -17,13 +17,9 @@ use function str_split;
 use function strtoupper;
 use function wordwrap;
 
-/**
- * Class CertificateX509 represents Certificate model in X509 structure.
- *
- * @method RSA getPublicKey()
- */
-class CertificateX509 extends X509
+class CertificateX509
 {
+    private X509 $x509;
     private string $value;
 
     public function __construct(string $value)
@@ -32,9 +28,9 @@ class CertificateX509 extends X509
             throw new RuntimeException('x509 key is empty');
         }
 
-        parent::__construct();
+        $this->x509 = new X509();
+        $this->x509->loadX509($value);
 
-        $this->loadX509($value);
         $this->value = $value;
     }
 
@@ -43,7 +39,7 @@ class CertificateX509 extends X509
         return $this->value;
     }
 
-    public function digest(): string
+    public function fingerprint(): string
     {
         $digest  = strtoupper(openssl_x509_fingerprint($this->value, 'sha256'));
         $digests = str_split($digest, 16);
@@ -54,22 +50,33 @@ class CertificateX509 extends X509
         return implode("\n", $digests);
     }
 
+    public function digest(): string
+    {
+        $digest  = strtoupper(hash('sha256', $this->value, false));
+        $digests = str_split($digest, 16);
+        $digests = array_map(static function ($digest) {
+            return wordwrap($digest, 2, ' ', true);
+        }, $digests);
+
+        return implode("\n", $digests);
+    }
+
     /**
-     * Get Certificate serialNumber.
+     * @internal
      */
     public function getSerialNumber(): string
     {
-        $certificateSerialNumber = $this->currentCert['tbsCertificate']['serialNumber'];
+        $certificateSerialNumber = $this->x509->currentCert['tbsCertificate']['serialNumber'];
 
         return $certificateSerialNumber->toString();
     }
 
     /**
-     * Get Certificate Issuer DN property id-at-commonName.
+     * @internal
      */
     public function getInsurerName(): string
     {
-        $certificateInsurerName = $this->getIssuerDNProp('id-at-commonName');
+        $certificateInsurerName = $this->x509->getIssuerDNProp('id-at-commonName');
 
         if (! is_array($certificateInsurerName) || empty($certificateInsurerName)) {
             throw new RuntimeException('unable to get id-at-commonName from certificate');

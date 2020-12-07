@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fezfez\Ebics;
+namespace Fezfez\Ebics\Crypt;
 
 use phpseclib\Crypt\RSA;
 

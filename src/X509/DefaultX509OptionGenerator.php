@@ -6,8 +6,9 @@ namespace Fezfez\Ebics\X509;
 
 use DateTimeImmutable;
 
-class SilarhiX509Generator implements X509CertificatOptionsGenerator
+class DefaultX509OptionGenerator implements X509CertificatOptionsGenerator
 {
+    /** @psalm-pure */
     public function getOption(): array
     {
         return [
@@ -41,11 +42,13 @@ class SilarhiX509Generator implements X509CertificatOptionsGenerator
         ];
     }
 
+    /** @psalm-pure */
     public function getStart(): DateTimeImmutable
     {
         return (new DateTimeImmutable())->modify('-1 days');
     }
 
+    /** @psalm-pure */
     public function getEnd(): DateTimeImmutable
     {
         return (new DateTimeImmutable())->modify('+1 year');

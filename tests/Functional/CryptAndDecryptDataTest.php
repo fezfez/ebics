@@ -12,9 +12,8 @@ use Fezfez\Ebics\Crypt\GenerateCertificat;
 use Fezfez\Ebics\DOMDocument;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
-use Fezfez\Ebics\Password;
 use Fezfez\Ebics\PrivateKey;
-use Fezfez\Ebics\X509\SilarhiX509Generator;
+use Fezfez\Ebics\X509\DefaultX509OptionGenerator;
 use phpseclib\Crypt\AES;
 use PHPUnit\Framework\TestCase;
 
@@ -29,17 +28,17 @@ class CryptAndDecryptDataTest extends TestCase
         $generateCert            = new GenerateCertificat();
         $encrypted               = new EncrytSignatureValueWithUserPrivateKey();
         $decryptOrderDataContent = new DecryptOrderDataContent();
-        $password                = new Password('myPass');
+        $password                = new KeyRing('myPass');
 
         $xmlData = '<test><AuthenticationPubKeyInfo><X509Certificate>test</X509Certificate><Modulus>test</Modulus><Exponent>test</Exponent></AuthenticationPubKeyInfo><EncryptionPubKeyInfo><X509Certificate>test</X509Certificate><Modulus>test</Modulus><Exponent>test</Exponent></EncryptionPubKeyInfo></test>';
 
-        $certE          = $generateCert->__invoke(new SilarhiX509Generator(), $password, CertificatType::e());
+        $certE          = $generateCert->__invoke(new DefaultX509OptionGenerator(), $password, CertificatType::e());
         $transactionKey = $encrypted->__invoke($password, new PrivateKey($certE->getPublicKey()), $xmlData);
 
         $orderData = $this->aesCrypt((new AddRsaSha256PrefixAndReturnAsBinary())->__invoke($xmlData), gzcompress($xmlData));
 
         $keyRing = new KeyRing('myPass');
-        $keyRing->setUserCertificateEAndX($certE, $certE);
+        $keyRing = $keyRing->setUserCertificateEAndX($certE, $certE);
 
         self::assertXmlStringEqualsXmlString($xmlData, (new DOMDocument($decryptOrderDataContent->__invoke($keyRing, new OrderDataEncrypted($orderData, $transactionKey))))->toString());
     }

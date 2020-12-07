@@ -14,29 +14,61 @@ use function Safe\json_decode;
 
 class KeyRing implements JsonSerializable
 {
-    private ?UserCertificate $userCertificateA = null;
-    private ?UserCertificate $userCertificateX = null;
-    private ?UserCertificate $userCertificateE = null;
-    private ?BankCertificate $bankCertificateX = null;
-    private ?BankCertificate $bankCertificateE = null;
+    private ?UserCertificate $userCertificateA;
+    private ?UserCertificate $userCertificateX;
+    private ?UserCertificate $userCertificateE;
+    private ?BankCertificate $bankCertificateX;
+    private ?BankCertificate $bankCertificateE;
+    private string $password;
 
-    private Password $password;
-
-    public function __construct(string $password)
-    {
-        $this->password = new Password($password);
+    public function __construct(
+        string $password,
+        ?UserCertificate $userCertificateA = null,
+        ?UserCertificate $userCertificateX = null,
+        ?UserCertificate $userCertificateE = null,
+        ?BankCertificate $bankCertificateX = null,
+        ?BankCertificate $bankCertificateE = null
+    ) {
+        $this->password         = $password;
+        $this->userCertificateA = $userCertificateA;
+        $this->userCertificateX = $userCertificateX;
+        $this->userCertificateE = $userCertificateE;
+        $this->bankCertificateX = $bankCertificateX;
+        $this->bankCertificateE = $bankCertificateE;
     }
 
-    public function setUserCertificateA(UserCertificate $certificate): void
+    public function setUserCertificateA(UserCertificate $certificate): self
     {
         if ($this->userCertificateA !== null) {
             throw new RuntimeException('userCertificateA already exist');
         }
 
-        $this->userCertificateA = $certificate;
+        return new self(
+            $this->password,
+            $certificate,
+            $this->userCertificateX,
+            $this->userCertificateE,
+            $this->bankCertificateX,
+            $this->bankCertificateE,
+        );
     }
 
-    public function setUserCertificateEAndX(UserCertificate $userCertificateE, UserCertificate $userCertificateX): void
+    public function hasUserCertificatA(): bool
+    {
+        return $this->userCertificateA !== null;
+    }
+
+    public function hasUserCertificateEAndX(): bool
+    {
+        return $this->userCertificateE !== null && $this->userCertificateX !== null;
+    }
+
+    public function hasBankCertificate(): bool
+    {
+        return $this->bankCertificateX !== null && $this->bankCertificateE !== null;
+    }
+
+    public function setUserCertificateEAndX(UserCertificate $userCertificateE, UserCertificate $userCertificateX): self
     {
         if ($this->userCertificateE !== null) {
             throw new RuntimeException('userCertificateE already exist');
@@ -46,11 +78,17 @@ class KeyRing implements JsonSerializable
             throw new RuntimeException('userCertificateX already exist');
         }
 
-        $this->userCertificateE = $userCertificateE;
-        $this->userCertificateX = $userCertificateX;
+        return new self(
+            $this->password,
+            $this->userCertificateA,
+            $userCertificateX,
+            $userCertificateE,
+            $this->bankCertificateX,
+            $this->bankCertificateE,
+        );
     }
 
-    public function setBankCertificate(BankCertificate $bankCertificateX, BankCertificate $bankCertificateE): void
+    public function setBankCertificate(BankCertificate $bankCertificateX, BankCertificate $bankCertificateE): self
     {
         if ($this->bankCertificateX !== null) {
             throw new RuntimeException('bankCertificateX already exist');
@@ -60,8 +98,14 @@ class KeyRing implements JsonSerializable
             throw new RuntimeException('bankCertificateE already exist');
         }
 
-        $this->bankCertificateX = $bankCertificateX;
-        $this->bankCertificateE = $bankCertificateE;
+        return new self(
+            $this->password,
+            $this->userCertificateA,
+            $this->userCertificateX,
+            $this->userCertificateE,
+            $bankCertificateX,
+            $bankCertificateE,
+        );
     }
 
     public function getUserCertificateA(): UserCertificate
@@ -91,7 +135,7 @@ class KeyRing implements JsonSerializable
         return $this->userCertificateE;
     }
 
-    public function getPassword(): Password
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -128,8 +172,6 @@ class KeyRing implements JsonSerializable
      */
     public static function fromArray(array $data, string $password): self
     {
-        $keyring = new self($password);
-
         $buildBankCertificate = static function (string $key) use ($data): ?BankCertificate {
             if (array_key_exists($key, $data) && ! empty($data[$key])) {
                 return BankCertificate::fromArray($data[$key]);
@@ -146,13 +188,14 @@ class KeyRing implements JsonSerializable
             return null;
         };
 
-        $keyring->bankCertificateE = $buildBankCertificate('bankCertificateE');
-        $keyring->bankCertificateX = $buildBankCertificate('bankCertificateX');
-        $keyring->userCertificateA = $buildUserCertificate('userCertificateA');
-        $keyring->userCertificateE = $buildUserCertificate('userCertificateE');
-        $keyring->userCertificateX = $buildUserCertificate('userCertificateX');
-
-        return $keyring;
+        return new self(
+            $password,
+            $buildUserCertificate('userCertificateA'),
+            $buildUserCertificate('userCertificateX'),
+            $buildUserCertificate('userCertificateE'),
+            $buildBankCertificate('bankCertificateX'),
+            $buildBankCertificate('bankCertificateE'),
+        );
     }
 
     /**

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Fezfez\Ebics\Command;
 
 use DateTime;
-use Fezfez\Ebics\Bank;
 use Fezfez\Ebics\BankCertificate;
+use Fezfez\Ebics\BankInfo;
 use Fezfez\Ebics\CertificateX509;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Crypt\DecryptOrderDataContent;
@@ -16,7 +16,6 @@ use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\OrderDataEncrypted;
 use Fezfez\Ebics\RenderXml;
-use Fezfez\Ebics\User;
 use phpseclib\Crypt\Random;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
@@ -45,14 +44,14 @@ class HPBCommand
         $this->decryptOrderDataContent              = new DecryptOrderDataContent();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing): KeyRing
+    public function __invoke(BankInfo $bank, KeyRing $keyRing): KeyRing
     {
         $search = [
             '{{HostID}}' => $bank->getHostId(),
             '{{Nonce}}' => strtoupper(bin2hex(Random::string(16))),
             '{{Timestamp}}' => (new DateTime())->format('Y-m-d\TH:i:s\Z'),
-            '{{PartnerID}}' => $user->getPartnerId(),
-            '{{UserID}}' => $user->getUserId(),
+            '{{PartnerID}}' => $bank->getPartnerId(),
+            '{{UserID}}' => $bank->getUserId(),
         ];
 
         $search['{{rawDigest}}']         = $this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'HPB_digest.xml');
@@ -60,7 +59,7 @@ class HPBCommand
         $search['{{RawSignatureValue}}'] = $this->renderXml->renderXmlRaw($search, $bank->getVersion(), 'HPB_SignatureValue.xml');
         $search['{{SignatureValue}}']    = base64_encode(
             $this->cryptStringWithPasswordAndCertificat->__invoke(
-                $keyRing->getPassword(),
+                $keyRing,
                 $keyRing->getUserCertificateX()->getPrivateKey(),
                 hash('sha256', $search['{{RawSignatureValue}}'], true)
             )
@@ -80,12 +79,10 @@ class HPBCommand
 
         $decryptedResponse = new DOMDocument($decryptedResponse);
 
-        $keyRing->setBankCertificate(
+        return $keyRing->setBankCertificate(
             $this->cert($decryptedResponse, CertificatType::x(), 'AuthenticationPubKeyInfo'),
             $this->cert($decryptedResponse, CertificatType::e(), 'EncryptionPubKeyInfo'),
         );
-
-        return $keyRing;
     }
 
     private function cert(DOMDocument $decrypted, CertificatType $certificatType, string $parentNode): BankCertificate

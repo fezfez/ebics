@@ -53,4 +53,22 @@ class CertificatType
     {
         return $this->type;
     }
+
+    public function toString(): string
+    {
+        if ($this->type === 'X') {
+            return 'X002';
+        }
+
+        if ($this->type === 'E') {
+            return 'E002';
+        }
+
+        return 'A006';
+    }
+
+    public function getHash(): string
+    {
+        return 'SHA-256';
+    }
 }

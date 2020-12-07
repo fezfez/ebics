@@ -17,7 +17,7 @@ class EbicsServerCaller
         $this->httpClient = $httpClient ?? SymfonyClient::create();
     }
 
-    public function __invoke(string $request, Bank $bank): string
+    public function __invoke(string $request, BankInfo $bank): string
     {
         $result = $this->httpClient->request('POST', $bank->getUrl(), [
             'headers' => ['Content-Type' => 'text/xml; charset=ISO-8859-1'],

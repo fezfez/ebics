@@ -6,6 +6,9 @@ namespace Fezfez\Ebics;
 
 use RuntimeException;
 
+/**
+ * @internal
+ */
 class PrivateKey
 {
     private string $value;

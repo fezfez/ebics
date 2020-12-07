@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Tests\Unit;
 
-use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\BankInfo;
 use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\RequestMaker;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ use Throwable;
 /**
  * @coversDefaultClass RequestMaker
  */
-class PostTest extends TestCase
+class EbicsServerCallerTest extends TestCase
 {
     public function testOk(): void
     {
@@ -32,7 +32,7 @@ class PostTest extends TestCase
 
         $sUT = new EbicsServerCaller($httpClient);
 
-        $bank = self::createMock(Bank::class);
+        $bank = self::createMock(BankInfo::class);
 
         $bank->expects(self::once())->method('getUrl')->willReturn('url');
 
@@ -54,7 +54,7 @@ class PostTest extends TestCase
 
         $sUT = new EbicsServerCaller($httpClient);
 
-        $bank = self::createMock(Bank::class);
+        $bank = self::createMock(BankInfo::class);
 
         $bank->expects(self::once())->method('getUrl')->willReturn('url');
 

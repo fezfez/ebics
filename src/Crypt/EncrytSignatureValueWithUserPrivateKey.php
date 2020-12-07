@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Crypt;
 
-use Fezfez\Ebics\Password;
+use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\PrivateKey;
 use phpseclib\Crypt\RSA;
 use RuntimeException;
@@ -27,10 +27,10 @@ class EncrytSignatureValueWithUserPrivateKey
     /**
      * @throws RuntimeException
      */
-    public function __invoke(Password $password, PrivateKey $key, string $hash): string
+    public function __invoke(KeyRing $keyRing, PrivateKey $key, string $hash): string
     {
         $rsa = new RSA();
-        $rsa->setPassword($password->value());
+        $rsa->setPassword($keyRing->getPassword());
         $rsa->loadKey($key->value(), RSA::PRIVATE_FORMAT_PKCS1);
 
         if (! defined('CRYPT_RSA_PKCS15_COMPAT')) {

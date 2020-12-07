@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics;
 
+use Fezfez\Ebics\Crypt\ExponentAndModulus;
 use JsonSerializable;
 use phpseclib\Crypt\RSA;
 
@@ -35,7 +36,7 @@ class BankCertificate implements JsonSerializable
         );
     }
 
-    public function getType(): CertificatType
+    public function getCertificatType(): CertificatType
     {
         return $this->type;
     }

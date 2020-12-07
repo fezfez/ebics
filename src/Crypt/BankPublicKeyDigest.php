@@ -27,19 +27,19 @@ class BankPublicKeyDigest
             throw new RuntimeException('unable to load key');
         }
 
-        $e0 = $publicKey->exponent->toHex(true);
-        $m0 = $publicKey->modulus->toHex(true);
+        return base64_encode(hash('sha256', $this->generateDigest($publicKey), true));
+    }
+
+    private function generateDigest(RSA $publicKey): string
+    {
+        $exponent = $publicKey->exponent->toHex(true);
+        $modulus  = $publicKey->modulus->toHex(true);
+
         // If key was formed incorrect with Modulus and Exponent mismatch, then change the place of key parts.
-        if (strlen($e0) > strlen($m0)) {
-            $buffer = $e0;
-            $e0     = $m0;
-            $m0     = $buffer;
+        if (strlen($exponent) > strlen($modulus)) {
+            return sprintf('%s %s', ltrim($modulus, '0'), ltrim($exponent, '0'));
         }
 
-        $e1   = ltrim($e0, '0');
-        $m1   = ltrim($m0, '0');
-        $key1 = sprintf('%s %s', $e1, $m1);
-
-        return base64_encode(hash('sha256', $key1, true));
+        return sprintf('%s %s', ltrim($exponent, '0'), ltrim($modulus, '0'));
     }
 }

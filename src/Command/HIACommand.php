@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Fezfez\Ebics\Command;
 
 use DateTime;
-use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\BankInfo;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Crypt\GenerateCertificat;
 use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\RenderXml;
-use Fezfez\Ebics\User;
 use Fezfez\Ebics\Version;
 use Fezfez\Ebics\X509\X509CertificatOptionsGenerator;
 use RuntimeException;
@@ -35,7 +34,7 @@ class HIACommand
         $this->renderXml          = $renderXml ?? new RenderXml();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, ?string $orderId = null): KeyRing
+    public function __invoke(BankInfo $bank, KeyRing $keyRing, X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, ?string $orderId = null): KeyRing
     {
         if ($orderId !== null && ! $bank->getVersion()->is(Version::v24())) {
             throw new RuntimeException('OrderID only avaiable on ebics 2.4');
@@ -45,9 +44,9 @@ class HIACommand
             $orderId = 'A102';
         }
 
-        $keyRing->setUserCertificateEAndX(
-            $this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing->getPassword(), CertificatType::e()),
-            $this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing->getPassword(), CertificatType::x())
+        $keyRing = $keyRing->setUserCertificateEAndX(
+            $this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing, CertificatType::e()),
+            $this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing, CertificatType::x())
         );
 
         $search = [
@@ -62,8 +61,8 @@ class HIACommand
             '{{CertUserX_X509IssuerName}}' => $keyRing->getUserCertificateX()->getCertificatX509()->getInsurerName(),
             '{{CertUserX_X509SerialNumber}}' => $keyRing->getUserCertificateX()->getCertificatX509()->getSerialNumber(),
             '{{CertUserX_X509Certificate}}' => base64_encode($keyRing->getUserCertificateX()->getCertificatX509()->value()),
-            '{{PartnerID}}' => $user->getPartnerId(),
-            '{{UserID}}' => $user->getUserId(),
+            '{{PartnerID}}' => $bank->getPartnerId(),
+            '{{UserID}}' => $bank->getUserId(),
             '{{HostID}}' => $bank->getHostId(),
             '{{OrderID}}' => $orderId,
         ];

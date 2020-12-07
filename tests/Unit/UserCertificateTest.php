@@ -6,7 +6,7 @@ namespace Fezfez\Ebics\Tests\Unit;
 
 use Fezfez\Ebics\CertificateX509;
 use Fezfez\Ebics\CertificatType;
-use Fezfez\Ebics\ExponentAndModulus;
+use Fezfez\Ebics\Crypt\ExponentAndModulus;
 use Fezfez\Ebics\Models\Certificate;
 use Fezfez\Ebics\PrivateKey;
 use Fezfez\Ebics\UserCertificate;
@@ -29,7 +29,7 @@ class UserCertificateTest extends TestCase
 
         $sUT = new UserCertificate($certificatType, 'test2', $privateKey, $certificateX509);
 
-        self::assertSame($certificatType, $sUT->getType());
+        self::assertSame($certificatType, $sUT->getCertificatType());
         self::assertSame('test2', $sUT->getPublicKey());
         self::assertSame($privateKey, $sUT->getPrivateKey());
         self::assertSame($certificateX509, $sUT->getCertificatX509());

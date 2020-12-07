@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\Tests\E2e\Command;
 
-use Fezfez\Ebics\Bank;
 use Fezfez\Ebics\BankCertificate;
+use Fezfez\Ebics\BankInfo;
 use Fezfez\Ebics\CertificateX509;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Command\HPBCommand;
@@ -13,7 +13,6 @@ use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\PrivateKey;
 use Fezfez\Ebics\Tests\E2e\FakeCrypt;
-use Fezfez\Ebics\User;
 use Fezfez\Ebics\UserCertificate;
 use Fezfez\Ebics\Version;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -46,11 +45,10 @@ class HPBCommandTest extends E2eTestBase
             new EbicsServerCaller(new MockHttpClient($this->getCallback($versionToXmlResponse[$version->value()], $version, true)))
         );
 
-        $bank    = new Bank('myHostId', 'http://myurl.com', $version);
-        $user    = new User('myPartId', 'myUserId');
+        $bank    = new BankInfo('myHostId', 'http://myurl.com', $version, 'myPartId', 'myUserId');
         $keyRing = new KeyRing('');
 
-        $keyRing->setUserCertificateEAndX(
+        $keyRing = $keyRing->setUserCertificateEAndX(
             new UserCertificate(
                 CertificatType::e(),
                 FakeCrypt::RSA_PUBLIC_KEY,
@@ -65,7 +63,7 @@ class HPBCommandTest extends E2eTestBase
             )
         );
 
-        $keyRing = $sUT->__invoke($bank, $user, $keyRing);
+        $keyRing = $sUT->__invoke($bank, $keyRing);
 
         self::assertInstanceOf(BankCertificate::class, $keyRing->getBankCertificateX());
         self::assertInstanceOf(BankCertificate::class, $keyRing->getBankCertificateE());

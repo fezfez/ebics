@@ -6,7 +6,7 @@ namespace Fezfez\Ebics\Crypt;
 
 use Fezfez\Ebics\CertificateX509;
 use Fezfez\Ebics\CertificatType;
-use Fezfez\Ebics\Password;
+use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\PrivateKey;
 use Fezfez\Ebics\UserCertificate;
 use Fezfez\Ebics\X509\X509CertificatOptionsGenerator;
@@ -29,14 +29,14 @@ class GenerateCertificat
         $this->x509Generator = $x509Generator ?? new X509Generator();
     }
 
-    public function __invoke(X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, Password $password, CertificatType $type): UserCertificate
+    public function __invoke(X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, KeyRing $keyring, CertificatType $type): UserCertificate
     {
         $rsa = new RSA();
         $rsa->setPublicKeyFormat(RSA::PRIVATE_FORMAT_PKCS1);
         $rsa->setPrivateKeyFormat(RSA::PUBLIC_FORMAT_PKCS1);
         $rsa->setHash('sha256');
         $rsa->setMGFHash('sha256');
-        $rsa->setPassword($password->value());
+        $rsa->setPassword($keyring->getPassword());
 
         $keys = $rsa->createKey(2048);
 

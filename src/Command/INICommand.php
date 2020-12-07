@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Fezfez\Ebics\Command;
 
 use DateTime;
-use Fezfez\Ebics\Bank;
+use Fezfez\Ebics\BankInfo;
 use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Crypt\GenerateCertificat;
 use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\RenderXml;
-use Fezfez\Ebics\User;
 use Fezfez\Ebics\Version;
 use Fezfez\Ebics\X509\X509CertificatOptionsGenerator;
 use RuntimeException;
@@ -35,7 +34,7 @@ class INICommand
         $this->renderXml          = $renderXml ?? new RenderXml();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, ?string $orderId = null): KeyRing
+    public function __invoke(BankInfo $bank, KeyRing $keyRing, X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, ?string $orderId = null): KeyRing
     {
         if ($orderId !== null && ! $bank->getVersion()->is(Version::v24())) {
             throw new RuntimeException('OrderID only avaiable on ebics 2.4');
@@ -45,7 +44,7 @@ class INICommand
             $orderId = 'A102';
         }
 
-        $keyRing->setUserCertificateA($this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing->getPassword(), CertificatType::a()));
+        $keyRing = $keyRing->setUserCertificateA($this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing, CertificatType::a()));
 
         $search = [
             '{{TimeStamp}}' => (new DateTime())->format('Y-m-d\TH:i:s\Z'),
@@ -54,8 +53,8 @@ class INICommand
             '{{X509IssuerName}}' => $keyRing->getUserCertificateA()->getCertificatX509()->getInsurerName(),
             '{{X509SerialNumber}}' => $keyRing->getUserCertificateA()->getCertificatX509()->getSerialNumber(),
             '{{X509Certificate}}' => base64_encode($keyRing->getUserCertificateA()->getCertificatX509()->value()),
-            '{{PartnerID}}' => $user->getPartnerId(),
-            '{{UserID}}' => $user->getUserId(),
+            '{{PartnerID}}' => $bank->getPartnerId(),
+            '{{UserID}}' => $bank->getUserId(),
             '{{HostID}}' => $bank->getHostId(),
             '{{OrderID}}' => $orderId,
         ];

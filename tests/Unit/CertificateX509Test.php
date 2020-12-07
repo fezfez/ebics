@@ -25,7 +25,11 @@ class CertificateX509Test extends TestCase
         self::assertSame('C0 3C FB A7 A5 47 42 9F
 80 65 CC 10 7E 7D E9 D3
 00 6C 9D 40 11 39 F6 06
-07 FD 27 AC 09 5F 40 26', $sUT->digest());
+07 FD 27 AC 09 5F 40 26', $sUT->fingerprint());
+        self::assertSame('84 E0 3C 1C 54 D7 54 F8
+90 B7 57 3B 69 5F C9 C0
+0F 4D 44 3A D6 9D 4C 34
+B5 3D A1 36 EB AC 64 93', $sUT->digest());
     }
 
     public function testEmptyFail(): void
