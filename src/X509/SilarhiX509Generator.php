@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\X509;
 
-/**
- * Legacy X509 certificate generator @see X509Generator.
- */
-class SilarhiX509Generator extends BaseX509Generator
+use DateTimeImmutable;
+
+class SilarhiX509Generator implements X509CertificatOptionsGenerator
 {
-    protected function getCertificateOptions(array $options = []): array
+    public function getOption(): array
     {
         return [
             'subject' => [
@@ -40,5 +39,15 @@ class SilarhiX509Generator extends BaseX509Generator
                 ],
             ],
         ];
+    }
+
+    public function getStart(): DateTimeImmutable
+    {
+        return (new DateTimeImmutable())->modify('-1 days');
+    }
+
+    public function getEnd(): DateTimeImmutable
+    {
+        return (new DateTimeImmutable())->modify('+1 year');
     }
 }

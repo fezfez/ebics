@@ -9,7 +9,8 @@ use Fezfez\Ebics\CertificatType;
 use Fezfez\Ebics\Password;
 use Fezfez\Ebics\PrivateKey;
 use Fezfez\Ebics\UserCertificate;
-use Fezfez\Ebics\X509Generator;
+use Fezfez\Ebics\X509\X509CertificatOptionsGenerator;
+use Fezfez\Ebics\X509\X509Generator;
 use phpseclib\Crypt\RSA;
 use RuntimeException;
 
@@ -21,7 +22,14 @@ use function sprintf;
  */
 class GenerateCertificat
 {
-    public function __invoke(X509Generator $x509Generator, Password $password, CertificatType $type): UserCertificate
+    private X509Generator $x509Generator;
+
+    public function __construct(?X509Generator $x509Generator = null)
+    {
+        $this->x509Generator = $x509Generator ?? new X509Generator();
+    }
+
+    public function __invoke(X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, Password $password, CertificatType $type): UserCertificate
     {
         $rsa = new RSA();
         $rsa->setPublicKeyFormat(RSA::PRIVATE_FORMAT_PKCS1);
@@ -55,7 +63,7 @@ class GenerateCertificat
             $type,
             $keys['publickey'],
             new PrivateKey($keys['privatekey']),
-            new CertificateX509($x509Generator->generateX509($privateKey, $publicKey, ['type' => $type->value()]))
+            new CertificateX509($this->x509Generator->__invoke($privateKey, $publicKey, $type, $x509CertificatOptionsGenerator))
         );
     }
 }

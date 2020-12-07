@@ -13,7 +13,7 @@ use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\RenderXml;
 use Fezfez\Ebics\User;
 use Fezfez\Ebics\Version;
-use Fezfez\Ebics\X509Generator;
+use Fezfez\Ebics\X509\X509CertificatOptionsGenerator;
 use RuntimeException;
 
 use function base64_encode;
@@ -35,7 +35,7 @@ class HIACommand
         $this->renderXml          = $renderXml ?? new RenderXml();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509Generator $x509Generator, ?string $orderId = null): KeyRing
+    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509CertificatOptionsGenerator $x509CertificatOptionsGenerator, ?string $orderId = null): KeyRing
     {
         if ($orderId !== null && ! $bank->getVersion()->is(Version::v24())) {
             throw new RuntimeException('OrderID only avaiable on ebics 2.4');
@@ -46,8 +46,8 @@ class HIACommand
         }
 
         $keyRing->setUserCertificateEAndX(
-            $this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::e()),
-            $this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::x())
+            $this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing->getPassword(), CertificatType::e()),
+            $this->generateCertificat->__invoke($x509CertificatOptionsGenerator, $keyRing->getPassword(), CertificatType::x())
         );
 
         $search = [

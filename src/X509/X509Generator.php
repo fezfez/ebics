@@ -4,74 +4,43 @@ declare(strict_types=1);
 
 namespace Fezfez\Ebics\X509;
 
-use DateTimeImmutable;
-use DateTimeInterface;
-use Fezfez\Ebics\X509Generator;
+use Fezfez\Ebics\CertificatType;
 use phpseclib\Crypt\RSA;
 use phpseclib\File\X509;
 use RuntimeException;
 
 use function array_merge;
+use function is_array;
 use function rand;
 use function sprintf;
 use function var_export;
 
-/**
- * Default X509 certificate generator @see X509Generator.
- */
-abstract class BaseX509Generator implements X509Generator
+class X509Generator
 {
-    protected DateTimeInterface $certificateStartDate;
-    protected DateTimeInterface $certificateEndDate;
-    protected string $serialNumber;
-
-    public function __construct()
-    {
-        $this->certificateStartDate = (new DateTimeImmutable())->modify('-1 days');
-        $this->certificateEndDate   = (new DateTimeImmutable())->modify('+1 year');
-        $this->serialNumber         = $this->generateSerialNumber();
-    }
-
-    /**
-     * Get certificate options
-     *
-     * @see X509 options
-     *
-     * @param array<string, mixed> $options default generation options (may be empty)
-     *
-     * @return array<string, mixed> the certificate options
-     */
-    abstract protected function getCertificateOptions(array $options = []): array;
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws RuntimeException
-     */
-    public function generateX509(RSA $privateKey, RSA $publicKey, array $options = []): string
+    public function __invoke(RSA $privateKey, RSA $publicKey, CertificatType $type, X509CertificatOptionsGenerator $certificatOptionsGenerator): string
     {
         $options = array_merge([
+            'type' => $type->value(),
             'subject' => [
                 'domain' => null,
                 'DN' => null,
             ],
             'issuer' => ['DN' => null], //Same as subject, means self-signed
             'extensions' => [],
-        ], $this->getCertificateOptions($options));
+        ], $certificatOptionsGenerator->getOption());
 
-        $subject = $this->generateSubject($publicKey, $options);
-        $issuer  = $this->generateIssuer($privateKey, $publicKey, $subject, $options);
-
+        $subject            = $this->generateSubject($publicKey, $options);
+        $issuer             = $this->generateIssuer($privateKey, $publicKey, $subject, $options);
         $x509               = new X509();
-        $x509->startDate    = $this->certificateStartDate->format('YmdHis');
-        $x509->endDate      = $this->certificateEndDate->format('YmdHis');
-        $x509->serialNumber = $this->serialNumber;
+        $x509->startDate    = $certificatOptionsGenerator->getStart()->format('YmdHis');
+        $x509->endDate      = $certificatOptionsGenerator->getEnd()->format('YmdHis');
+        $x509->serialNumber = $this->generateSerialNumber();
 
         $result = $x509->sign($issuer, $subject, 'sha256WithRSAEncryption');
         $x509->loadX509($result);
 
         foreach ($options['extensions'] as $id => $extension) {
-            $extension = X509ExtensionOptionsNormalizer::normalize($extension);
+            $extension = self::normalize($extension);
 
             if ($x509->setExtension($id, $extension['value'], $extension['critical'], $extension['replace']) === false) {
                 throw new RuntimeException(sprintf('Unable to set "%s" extension with value: %s', $id, var_export($extension['value'], true)));
@@ -86,7 +55,7 @@ abstract class BaseX509Generator implements X509Generator
     /**
      * @param array<string, mixed> $options
      */
-    protected function generateSubject(RSA $publicKey, array $options): X509
+    private function generateSubject(RSA $publicKey, array $options): X509
     {
         $subject = new X509();
         $subject->setPublicKey($publicKey); // $pubKey is Crypt_RSA object
@@ -107,7 +76,7 @@ abstract class BaseX509Generator implements X509Generator
     /**
      * @param array<string, mixed> $options
      */
-    protected function generateIssuer(RSA $privateKey, RSA $publicKey, X509 $subject, array $options): X509
+    private function generateIssuer(RSA $privateKey, RSA $publicKey, X509 $subject, array $options): X509
     {
         $issuer = new X509();
         $issuer->setPrivateKey($privateKey); // $privKey is Crypt_RSA object
@@ -126,7 +95,7 @@ abstract class BaseX509Generator implements X509Generator
     /**
      * Generate 74 digits serial number represented in the string.
      */
-    protected function generateSerialNumber(): string
+    private function generateSerialNumber(): string
     {
         // prevent the first number from being 0
         $result = rand(1, 9);
@@ -137,18 +106,40 @@ abstract class BaseX509Generator implements X509Generator
         return (string) $result;
     }
 
-    public function getCertificateStartDate(): DateTimeInterface
+    /**
+     * @see X509::setExtension()
+     *
+     * @param mixed|string|array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    private static function normalize($options): array
     {
-        return $this->certificateStartDate;
-    }
+        $value    = null;
+        $critical = false;
+        $replace  = true;
 
-    public function getCertificateEndDate(): DateTimeInterface
-    {
-        return $this->certificateEndDate;
-    }
+        if (! is_array($options)) {
+            $value = $options;
+        } else {
+            if (! isset($options['value'])) {
+                $value = $options;
+            } else {
+                $value = $options['value'];
+                if (isset($options['critical'])) {
+                    $critical = $options['critical'];
+                }
 
-    public function getSerialNumber(): string
-    {
-        return $this->serialNumber;
+                if (isset($options['replace'])) {
+                    $replace = $options['replace'];
+                }
+            }
+        }
+
+        return [
+            'value' => $value,
+            'critical' => $critical,
+            'replace' => $replace,
+        ];
     }
 }
