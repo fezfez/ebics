@@ -16,9 +16,9 @@ class X509ExtensionOptionsNormalizer
     /**
      * @see X509::setExtension()
      *
-     * @param mixed|string|array $options
+     * @param mixed|string|array<string, mixed> $options
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public static function normalize($options): array
     {

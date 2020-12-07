@@ -6,6 +6,9 @@ namespace Fezfez\Ebics;
 
 use phpseclib\Crypt\RSA;
 
+/**
+ * @internal
+ */
 class ExponentAndModulus
 {
     private RSA $rsa;

@@ -12,7 +12,9 @@ use Fezfez\Ebics\EbicsServerCaller;
 use Fezfez\Ebics\KeyRing;
 use Fezfez\Ebics\RenderXml;
 use Fezfez\Ebics\User;
+use Fezfez\Ebics\Version;
 use Fezfez\Ebics\X509Generator;
+use RuntimeException;
 
 use function base64_encode;
 use function Safe\gzcompress;
@@ -33,8 +35,16 @@ class INICommand
         $this->renderXml          = $renderXml ?? new RenderXml();
     }
 
-    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509Generator $x509Generator): KeyRing
+    public function __invoke(Bank $bank, User $user, KeyRing $keyRing, X509Generator $x509Generator, ?string $orderId = null): KeyRing
     {
+        if ($orderId !== null && ! $bank->getVersion()->is(Version::v24())) {
+            throw new RuntimeException('OrderID only avaiable on ebics 2.4');
+        }
+
+        if ($orderId === null && $bank->getVersion()->is(Version::v24())) {
+            $orderId = 'A102';
+        }
+
         $keyRing->setUserCertificateA($this->generateCertificat->__invoke($x509Generator, $keyRing->getPassword(), CertificatType::a()));
 
         $search = [
@@ -47,6 +57,7 @@ class INICommand
             '{{PartnerID}}' => $user->getPartnerId(),
             '{{UserID}}' => $user->getUserId(),
             '{{HostID}}' => $bank->getHostId(),
+            '{{OrderID}}' => $orderId,
         ];
 
         $search['{{OrderData}}'] = base64_encode(gzcompress($this->renderXml->__invoke($search, $bank->getVersion(), 'INI_OrderData.xml')->toString()));

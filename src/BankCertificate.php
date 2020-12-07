@@ -23,6 +23,9 @@ class BankCertificate implements JsonSerializable
         $this->x509      = $x509;
     }
 
+    /**
+     * @param array<string, string> $bankCertificateX
+     */
     public static function fromArray(array $bankCertificateX): self
     {
         return new self(
@@ -55,6 +58,9 @@ class BankCertificate implements JsonSerializable
         return new ExponentAndModulus($rsa);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function jsonSerialize(): array
     {
         return [

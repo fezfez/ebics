@@ -123,6 +123,9 @@ class KeyRing implements JsonSerializable
         return self::fromArray(json_decode(file_get_contents($file), true), $password);
     }
 
+    /**
+     * @param array<string, (array<string, string>|null)> $data
+     */
     public static function fromArray(array $data, string $password): self
     {
         $keyring = new self($password);
@@ -152,14 +155,17 @@ class KeyRing implements JsonSerializable
         return $keyring;
     }
 
+    /**
+     * @return array<string, (array<string, string>|null)>
+     */
     public function jsonSerialize(): array
     {
         return [
-            'bankCertificateE' => $this->bankCertificateE,
-            'bankCertificateX' => $this->bankCertificateX,
-            'userCertificateA' => $this->userCertificateA,
-            'userCertificateE' => $this->userCertificateE,
-            'userCertificateX' => $this->userCertificateX,
+            'bankCertificateE' => $this->bankCertificateE ? $this->bankCertificateE->jsonSerialize() : null,
+            'bankCertificateX' => $this->bankCertificateX ? $this->bankCertificateX->jsonSerialize() : null,
+            'userCertificateA' => $this->userCertificateA ? $this->userCertificateA->jsonSerialize() : null,
+            'userCertificateE' => $this->userCertificateE ? $this->userCertificateE->jsonSerialize() : null,
+            'userCertificateX' => $this->userCertificateX ? $this->userCertificateX->jsonSerialize() : null,
         ];
     }
 }

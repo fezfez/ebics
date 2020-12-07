@@ -12,6 +12,9 @@ use RuntimeException;
 use function define;
 use function defined;
 
+/**
+ * @internal
+ */
 class EncrytSignatureValueWithUserPrivateKey
 {
     private AddRsaSha256PrefixAndReturnAsBinary $addRsaSha256PrefixAndReturnAsBinary;

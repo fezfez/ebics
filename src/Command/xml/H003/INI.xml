@@ -8,7 +8,7 @@
             <Product Language="fr">Cube43 Ebics client PHP</Product>
             <OrderDetails>
                 <OrderType>INI</OrderType>
-                <OrderID>A102</OrderID>
+                <OrderID>{{OrderID}}</OrderID>
                 <OrderAttribute>DZNNN</OrderAttribute>
             </OrderDetails>
             <SecurityMedium>0000</SecurityMedium>

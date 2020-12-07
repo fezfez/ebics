@@ -20,6 +20,9 @@ use Symfony\Component\HttpClient\MockHttpClient;
 
 class HPBCommandTest extends E2eTestBase
 {
+    /**
+     * @return iterable<int, array<int, Version>>
+     */
     public function provideVersion(): iterable
     {
         yield [Version::v24()];

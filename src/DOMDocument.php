@@ -100,11 +100,8 @@ class DOMDocument
 
         $content = (string) $this->document->saveXML();
         $content = str_replace('<?xml version="1.0" encoding="utf-8"?>', "<?xml version='1.0' encoding='utf-8'?>", $content);
-        $content = trim($content);
 
-        //echo $content;
-
-        return $content;
+        return trim($content);
     }
 
     /**

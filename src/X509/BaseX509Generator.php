@@ -37,9 +37,9 @@ abstract class BaseX509Generator implements X509Generator
      *
      * @see X509 options
      *
-     * @param array $options default generation options (may be empty)
+     * @param array<string, mixed> $options default generation options (may be empty)
      *
-     * @return array the certificate options
+     * @return array<string, mixed> the certificate options
      */
     abstract protected function getCertificateOptions(array $options = []): array;
 
@@ -83,6 +83,9 @@ abstract class BaseX509Generator implements X509Generator
         return $x509->saveX509($result);
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     protected function generateSubject(RSA $publicKey, array $options): X509
     {
         $subject = new X509();
@@ -101,6 +104,9 @@ abstract class BaseX509Generator implements X509Generator
         return $subject;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     protected function generateIssuer(RSA $privateKey, RSA $publicKey, X509 $subject, array $options): X509
     {
         $issuer = new X509();

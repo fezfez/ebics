@@ -36,7 +36,7 @@ class RenderXmlTest extends TestCase
             <OrderData>{{OrderData}}</OrderData>
         </DataTransfer>
     </body>
-</ebicsUnsecuredRequest>', $sUT->__invoke(['{{HostID}}' => 'b'], Version::v24(), 'INI.xml')->toString());
+</ebicsUnsecuredRequest>', $sUT->__invoke(['{{HostID}}' => 'b', '{{OrderID}}' => 'A102'], Version::v24(), 'INI.xml')->toString());
     }
 
     public function testRawXml(): void
@@ -65,6 +65,6 @@ class RenderXmlTest extends TestCase
             <OrderData>{{OrderData}}</OrderData>
         </DataTransfer>
     </body>
-</ebicsUnsecuredRequest>', $sUT->renderXmlRaw(['{{HostID}}' => 'b'], Version::v24(), 'INI.xml'));
+</ebicsUnsecuredRequest>', $sUT->renderXmlRaw(['{{HostID}}' => 'b', '{{OrderID}}' => 'A102'], Version::v24(), 'INI.xml'));
     }
 }

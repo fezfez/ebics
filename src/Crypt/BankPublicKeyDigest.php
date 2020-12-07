@@ -14,6 +14,9 @@ use function ltrim;
 use function sprintf;
 use function strlen;
 
+/**
+ * @internal
+ */
 class BankPublicKeyDigest
 {
     public function __invoke(BankCertificate $certificate): string

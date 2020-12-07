@@ -8,6 +8,9 @@ use RuntimeException;
 
 use function in_array;
 
+/**
+ * @internal
+ */
 class CertificatType
 {
     private string $type;

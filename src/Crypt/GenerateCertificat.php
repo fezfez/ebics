@@ -16,6 +16,9 @@ use RuntimeException;
 use function array_key_exists;
 use function sprintf;
 
+/**
+ * @internal
+ */
 class GenerateCertificat
 {
     public function __invoke(X509Generator $x509Generator, Password $password, CertificatType $type): UserCertificate
