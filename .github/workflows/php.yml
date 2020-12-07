@@ -16,7 +16,6 @@ jobs:
         dependencies:
           - "lowest"
           - "highest"
-          - "locked"
         php-version:
           - "7.4"
           - "8.0"
@@ -31,9 +30,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: intl openssl zlib json dom pcov
+          extensions: intl openssl zlib json dom
+          coverage: pcov
 
-      - name: Validate composer.json and composer.lock
+      - name: Validate composer.json
         run: composer validate
 
       - name: "Install lowest dependencies"
@@ -43,10 +43,6 @@ jobs:
       - name: "Install highest dependencies"
         if: ${{ matrix.dependencies == 'highest' }}
         run: "composer update --no-interaction --no-progress --no-suggest"
-
-      - name: "Install locked dependencies"
-        if: ${{ matrix.dependencies == 'locked' }}
-        run: "composer install --no-interaction --no-progress --no-suggest"
 
       - name: Run test suite
         run: ./vendor/bin/phpunit --coverage-clover coverage.clover
