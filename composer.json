@@ -32,6 +32,7 @@
     "phpunit/phpunit": "^9.5",
     "infection/infection": "^0.20",
     "doctrine/coding-standard": "^8.2",
+    "slevomat/coding-standard" : "^6.4.1",
     "seromenho/xml-validator": "^1.0",
     "ocramius/package-versions": "^1.9.0 || ^2.0.0",
     "vimeo/psalm": "^4.3"
