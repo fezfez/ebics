@@ -1,14 +1,14 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method Fezfez\\\\Ebics\\\\X509\\\\SilarhiX509Generator\\:\\:getStart\\(\\) should return DateTimeImmutable but returns DateTimeImmutable\\|false\\.$#"
+			message: "#^Method Fezfez\\\\Ebics\\\\X509\\\\DefaultX509OptionGenerator\\:\\:getStart\\(\\) should return DateTimeImmutable but returns DateTimeImmutable\\|false\\.$#"
 			count: 1
-			path: src/X509/SilarhiX509Generator.php
+			path: src/X509/DefaultX509OptionGenerator.php
 
 		-
-			message: "#^Method Fezfez\\\\Ebics\\\\X509\\\\SilarhiX509Generator\\:\\:getEnd\\(\\) should return DateTimeImmutable but returns DateTimeImmutable\\|false\\.$#"
+			message: "#^Method Fezfez\\\\Ebics\\\\X509\\\\DefaultX509OptionGenerator\\:\\:getEnd\\(\\) should return DateTimeImmutable but returns DateTimeImmutable\\|false\\.$#"
 			count: 1
-			path: src/X509/SilarhiX509Generator.php
+			path: src/X509/DefaultX509OptionGenerator.php
 
 		-
 			message: "#^Parameter \\#1 \\$rawdigest of closure expects string, string\\|false given\\.$#"

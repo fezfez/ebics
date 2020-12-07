@@ -50,6 +50,7 @@
   },
   "suggest": {
     "silarhi/cfonb-parser": "If you need to parse CFONB datas from French Bank",
-    "andrew-svirin/mt942-php": "If you need to parse format MT942 from VMK, STA requests."
+    "andrew-svirin/mt942-php": "If you need to parse format MT942 from VMK, STA requests.",
+    "doctrine/orm": "Saving info into database"
   }
 }
